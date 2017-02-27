@@ -44,6 +44,7 @@ import org.graylog2.bootstrap.ServerBootstrap;
 import org.graylog2.cluster.NodeService;
 import org.graylog2.configuration.ElasticsearchConfiguration;
 import org.graylog2.configuration.EmailConfiguration;
+import org.graylog2.configuration.HttpConfiguration;
 import org.graylog2.configuration.MongoDbConfiguration;
 import org.graylog2.configuration.VersionCheckConfiguration;
 import org.graylog2.dashboards.DashboardBindings;
@@ -83,6 +84,7 @@ public class Server extends ServerBootstrap {
     private static final Logger LOG = LoggerFactory.getLogger(Server.class);
 
     private static final Configuration configuration = new Configuration();
+    private final HttpConfiguration httpConfiguration = new HttpConfiguration();
     private final ElasticsearchConfiguration elasticsearchConfiguration = new ElasticsearchConfiguration();
     private final EmailConfiguration emailConfiguration = new EmailConfiguration();
     private final MongoDbConfiguration mongoDbConfiguration = new MongoDbConfiguration();
@@ -133,6 +135,7 @@ public class Server extends ServerBootstrap {
     @Override
     protected List<Object> getCommandConfigurationBeans() {
         return Arrays.asList(configuration,
+                httpConfiguration,
                 elasticsearchConfiguration,
                 emailConfiguration,
                 mongoDbConfiguration,
@@ -148,7 +151,7 @@ public class Server extends ServerBootstrap {
         final ActivityWriter activityWriter = injector.getInstance(ActivityWriter.class);
         nodeService.registerServer(serverStatus.getNodeId().toString(),
                 configuration.isMaster(),
-                configuration.getRestTransportUri(),
+                httpConfiguration.getRestTransportUri(),
                 Tools.getLocalCanonicalHostname());
         serverStatus.setLocalMode(isLocal());
         if (configuration.isMaster() && !nodeService.isOnlyMaster(serverStatus.getNodeId())) {

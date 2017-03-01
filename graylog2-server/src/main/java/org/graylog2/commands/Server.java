@@ -151,7 +151,7 @@ public class Server extends ServerBootstrap {
         final ActivityWriter activityWriter = injector.getInstance(ActivityWriter.class);
         nodeService.registerServer(serverStatus.getNodeId().toString(),
                 configuration.isMaster(),
-                httpConfiguration.getRestTransportUri(),
+                httpConfiguration.getHttpPublishUri(),
                 Tools.getLocalCanonicalHostname());
         serverStatus.setLocalMode(isLocal());
         if (configuration.isMaster() && !nodeService.isOnlyMaster(serverStatus.getNodeId())) {
